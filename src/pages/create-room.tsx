@@ -11,7 +11,7 @@ export function CreateRoom() {
     const theme = data.get('theme')?.toString()
     console.log(theme)
 
-    navigate('/room/31231231')
+    navigate('/room/4a099063-c2d4-4edd-b9cd-646163493e77')
   }
 
   return(
