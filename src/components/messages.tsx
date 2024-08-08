@@ -1,25 +1,39 @@
 import { useParams } from "react-router-dom";
 import { Message } from "./message";
-import { use } from "react";
 import { getRoomMessages } from "../http/get-room-messages";
+import { useSuspenseQuery } from "@tanstack/react-query";
+
 
 export function Messages() {
-
   const { roomId } = useParams()
 
-  if(!roomId) {
+  if (!roomId) {
     throw new Error('Messages components must be used within room page')
   }
 
-  const { messages } = use(getRoomMessages({ roomId }))
+  const { data } = useSuspenseQuery({
+    queryKey: ['messages', roomId],
+    queryFn: () => getRoomMessages({ roomId }),
+  })
 
-  console.log(messages)
 
-  return(
+
+  const sortedMessages = data.messages.sort((a, b) => {
+    return b.amountOfReactions - a.amountOfReactions
+  })
+
+  return (
     <ol className="list-decimal list-outside px-3 space-y-8">
-      <Message text="Como funcionam as goroutines em GoLang e por que elas são importantes para a concorrência e paralelismo?" amountOfReactions={100} answered />
-      <Message text="Quais são as melhores práticas para organizar o código em um projeto GoLang, incluindo pacotes, módulos e a estrutura de diretórios?" amountOfReactions={50} />
-      <Message text="Como fazer a depuração de programas GoLang e quais ferramentas são recomendadas para isso?" amountOfReactions={10} />
+      {sortedMessages.map(message => {
+        return (
+          <Message 
+            key={message.id}
+            text={message.text}
+            amountOfReactions={message.amountOfReactions} 
+            answered={message.answered} 
+          />
+        )
+      })}
     </ol>
   )
 }
