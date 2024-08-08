@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { Message } from "./message";
 import { getRoomMessages } from "../http/get-room-messages";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { useMessagesWebSockets } from "../hooks/use-message-web-sockets";
 
 
 export function Messages() {
@@ -16,7 +17,7 @@ export function Messages() {
     queryFn: () => getRoomMessages({ roomId }),
   })
 
-
+  useMessagesWebSockets({ roomId })
 
   const sortedMessages = data.messages.sort((a, b) => {
     return b.amountOfReactions - a.amountOfReactions
