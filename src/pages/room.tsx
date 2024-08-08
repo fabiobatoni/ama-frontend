@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom"
 import amaLogo from '../assets/ama-logo.svg'
 import { ArrowRight, Share2 } from "lucide-react"
 import { Message } from "../components/message"
+import { toast } from "sonner"
 
 export function Room() {
 
@@ -14,6 +15,8 @@ export function Room() {
       navigator.share({ url })
     } else {
       navigator.clipboard.writeText( url )
+
+      toast.info('The room URL was copied to your clipboard')
     }
   }
 
